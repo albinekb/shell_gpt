@@ -23,6 +23,7 @@ from sgpt.utils import (
 )
 
 
+
 def main(
     prompt: str = typer.Argument(
         "",
@@ -203,7 +204,7 @@ def main(
         else SystemRole.get(role)
     )
 
-    function_schemas = (get_openai_schemas() or None) if functions else None
+    function_schemas = (get_openai_schemas(role) or None) if functions else None
 
     if repl:
         # Will be in infinite loop here until user exits with Ctrl+C.

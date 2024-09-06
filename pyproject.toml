@@ -5,7 +5,15 @@ build-backend = "hatchling.build"
 [project]
 name = "shell_gpt"
 description = "A command-line productivity tool powered by large language models, will help you accomplish your tasks faster and more efficiently."
-keywords = ["shell", "gpt", "openai", "ollama", "cli", "productivity", "cheet-sheet"]
+keywords = [
+    "shell",
+    "gpt",
+    "openai",
+    "ollama",
+    "cli",
+    "productivity",
+    "cheet-sheet",
+]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.6"
@@ -35,12 +43,12 @@ dependencies = [
     "distro >= 1.8.0, < 2.0.0",
     "instructor >= 0.4.5, < 1.0.0",
     'pyreadline3 >= 3.4.1, < 4.0.0; sys_platform == "win32"',
+    "appscript >= 1.0.0, < 2.0.0",
+
 ]
 
 [project.optional-dependencies]
-litellm = [
-    "litellm == 1.42.5"
-]
+litellm = ["litellm == 1.42.5"]
 test = [
     "pytest >= 7.2.2, < 8.0.0",
     "requests-mock[fixture] >= 1.10.0, < 2.0.0",
@@ -48,12 +56,9 @@ test = [
     "black == 23.1.0",
     "mypy == 1.1.1",
     "types-requests == 2.28.11.17",
-    "codespell  >= 2.2.5, < 3.0.0"
+    "codespell  >= 2.2.5, < 3.0.0",
 ]
-dev = [
-    "ruff == 0.0.256",
-    "pre-commit >= 3.1.1, < 4.0.0",
-]
+dev = ["ruff == 0.0.256", "pre-commit >= 3.1.1, < 4.0.0"]
 
 [project.scripts]
 sgpt = "sgpt:cli"
@@ -70,17 +75,11 @@ path = "sgpt/__version__.py"
 only-include = ["sgpt"]
 
 [tool.hatch.build.targets.sdist]
-only-include = [
-    "sgpt",
-    "tests",
-    "README.md",
-    "LICENSE",
-    "pyproject.toml",
-]
+only-include = ["sgpt", "tests", "README.md", "LICENSE", "pyproject.toml"]
 
 [tool.isort]
 profile = "black"
-skip =  "__init__.py"
+skip = "__init__.py"
 
 [tool.mypy]
 strict = true
@@ -88,17 +87,17 @@ exclude = ["llm_functions"]
 
 [tool.ruff]
 select = [
-    "E",  # pycodestyle errors.
-    "W",  # pycodestyle warnings.
-    "F",  # pyflakes.
-    "C",  # flake8-comprehensions.
-    "B",  # flake8-bugbear.
+    "E", # pycodestyle errors.
+    "W", # pycodestyle warnings.
+    "F", # pyflakes.
+    "C", # flake8-comprehensions.
+    "B", # flake8-bugbear.
 ]
 ignore = [
-    "E501",  # line too long, handled by black.
-    "C901",  # too complex.
-    "B008",  # do not perform function calls in argument defaults.
-    "E731",  # do not assign a lambda expression, use a def.
+    "E501", # line too long, handled by black.
+    "C901", # too complex.
+    "B008", # do not perform function calls in argument defaults.
+    "E731", # do not assign a lambda expression, use a def.
 ]
 
 [tool.codespell]

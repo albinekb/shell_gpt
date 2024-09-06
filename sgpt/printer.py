@@ -63,3 +63,30 @@ class TextPrinter(Printer):
     def static_print(self, text: str) -> str:
         secho(text, fg=self.color)
         return text
+
+def strip_function_call(text: str) -> str:
+    # Remove any lines that includes FunctionCall
+    return "\n".join(
+        line for line in text.split("\n") if "@FunctionCall" not in line
+    )
+
+class CommandPrinter(Printer):
+    """
+        Remove any function calls from the completion.
+         in: > @FunctionCall `shell_contents()`   git status
+         out: git status
+    """
+
+    def live_print(self, chunks: Generator[str, None, None]) -> str:
+        full_text = ""
+        for chunk in chunks:
+            full_text += chunk
+            secho(chunk, fg="cyan", nl=False)
+        else:
+            print()  # Add new line after last chunk.
+        return full_text
+
+    def static_print(self, text: str) -> str:
+        text = strip_function_call(text)
+        secho(text, fg="cyan")
+        return text

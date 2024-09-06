@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict, Generator, List, Optional
 from ..cache import Cache
 from ..config import cfg
 from ..function import get_function
-from ..printer import MarkdownPrinter, Printer, TextPrinter
+from ..printer import MarkdownPrinter, Printer, TextPrinter, CommandPrinter
 from ..role import DefaultRoles, SystemRole
 
 completion: Callable[..., Any] = lambda *args, **kwargs: Generator[Any, None, None]
@@ -75,7 +75,11 @@ class Handler:
 
         dict_args = json.loads(arguments)
         joined_args = ", ".join(f'{k}="{v}"' for k, v in dict_args.items())
-        yield f"> @FunctionCall `{name}({joined_args})` \n\n"
+        
+        if self.role.name != "OhCrapGPT":
+            yield f"> @FunctionCall `{name}({joined_args})` \n\n"
+        else:
+            yield ""
 
         result = get_function(name)(**dict_args)
         if cfg.get("SHOW_FUNCTIONS_OUTPUT") == "true":
