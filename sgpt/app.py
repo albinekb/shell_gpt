@@ -205,8 +205,8 @@ def main(
         if not role
         else SystemRole.get(role)
     )
-
-    function_schemas = (get_openai_schemas(role) or None) if functions else None
+    
+    function_schemas = (get_openai_schemas(role_class) or None) if functions else None
 
     if model == "gemini-flash":
         if chat:

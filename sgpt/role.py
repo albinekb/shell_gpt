@@ -51,6 +51,7 @@ class SystemRole:
         self,
         name: str,
         role: str,
+        tags: Optional[list[str]] = None,
         variables: Optional[Dict[str, str]] = None,
     ) -> None:
         self.storage.mkdir(parents=True, exist_ok=True)
@@ -58,6 +59,7 @@ class SystemRole:
         if variables:
             role = role.format(**variables)
         self.role = role
+        self.tags = tags
 
     @classmethod
     def create_defaults(cls) -> None:
