@@ -37,6 +37,8 @@ DEFAULT_CONFIG = {
     "SHELL_INTERACTION": os.getenv("SHELL_INTERACTION ", "true"),
     "OS_NAME": os.getenv("OS_NAME", "auto"),
     "SHELL_NAME": os.getenv("SHELL_NAME", "auto"),
+    "GEMINI_API_KEY": os.getenv("GEMINI_API_KEY", ""),
+    "GEMINI_MODEL": os.getenv("GEMINI_MODEL", "gemini-flash"),
     # New features might add their own config variables here.
 }
 
@@ -60,6 +62,9 @@ class Config(dict):  # type: ignore
             if not defaults.get("OPENAI_API_KEY") and not os.getenv("OPENAI_API_KEY"):
                 __api_key = getpass(prompt="Please enter your OpenAI API key: ")
                 defaults["OPENAI_API_KEY"] = __api_key
+            if not defaults.get("GEMINI_API_KEY") and not os.getenv("GEMINI_API_KEY"):
+                __api_key = getpass(prompt="Please enter your Gemini API key: ")
+                defaults["GEMINI_API_KEY"] = __api_key
             super().__init__(**defaults)
             self._write()
 
@@ -90,3 +95,4 @@ class Config(dict):  # type: ignore
 
 
 cfg = Config(SHELL_GPT_CONFIG_PATH, **DEFAULT_CONFIG)
+

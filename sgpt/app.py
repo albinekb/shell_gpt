@@ -13,6 +13,7 @@ from sgpt.function import get_openai_schemas
 from sgpt.handlers.chat_handler import ChatHandler
 from sgpt.handlers.default_handler import DefaultHandler
 from sgpt.handlers.repl_handler import ReplHandler
+from sgpt.handlers.gemini_handler import GeminiHandler, GeminiChatHandler
 from sgpt.llm_functions.init_functions import install_functions as inst_funcs
 from sgpt.role import DefaultRoles, SystemRole
 from sgpt.utils import (
@@ -32,7 +33,7 @@ def main(
     ),
     model: str = typer.Option(
         cfg.get("DEFAULT_MODEL"),
-        help="Large language model to use.",
+        help="Large language model to use. Options: gpt-3.5-turbo, gpt-4, gemini-flash",
     ),
     temperature: float = typer.Option(
         0.0,
@@ -95,10 +96,11 @@ def main(
         help="Show version.",
         callback=get_sgpt_version,
     ),
-    chat: str = typer.Option(
-        None,
-        help="Follow conversation with id, " 'use "temp" for quick session.',
-        rich_help_panel="Chat Options",
+    chat: bool = typer.Option(
+        False,
+        "--chat",
+        "-c",
+        help="Use chat mode.",
     ),
     repl: str = typer.Option(
         None,
@@ -206,35 +208,24 @@ def main(
 
     function_schemas = (get_openai_schemas(role) or None) if functions else None
 
-    if repl:
-        # Will be in infinite loop here until user exits with Ctrl+C.
-        ReplHandler(repl, role_class, md).handle(
-            init_prompt=prompt,
-            model=model,
-            temperature=temperature,
-            top_p=top_p,
-            caching=cache,
-            functions=function_schemas,
-        )
-
-    if chat:
-        full_completion = ChatHandler(chat, role_class, md).handle(
-            prompt=prompt,
-            model=model,
-            temperature=temperature,
-            top_p=top_p,
-            caching=cache,
-            functions=function_schemas,
-        )
+    if model == "gemini-flash":
+        if chat:
+            handler = GeminiChatHandler(chat, role_class, md)
+        else:
+            handler = GeminiHandler(role_class, md)
+    elif chat:
+        handler = ChatHandler(chat, role_class, md)
     else:
-        full_completion = DefaultHandler(role_class, md).handle(
-            prompt=prompt,
-            model=model,
-            temperature=temperature,
-            top_p=top_p,
-            caching=cache,
-            functions=function_schemas,
-        )
+        handler = DefaultHandler(role_class, md)
+
+    full_completion = handler.handle(
+        prompt=prompt,
+        model=model,
+        temperature=temperature,
+        top_p=top_p,
+        caching=cache,
+        functions=function_schemas,
+    )
 
     while shell and interaction:
         option = typer.prompt(
